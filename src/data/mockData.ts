@@ -18,7 +18,7 @@ export const menuItems: MenuItem[] = [
     id: 2,
     nome: "Lasanha Bolonhesa",
     categoria: "Pratos Principais",
-    descricao: "Lasanha artesanal com molho bolonhesa.",
+    descricao: "Lasanha artesanal com molho bolonhesa",
     preco: 38.9,
     imagem: lasagnaImg,
   },
