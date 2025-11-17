@@ -8,15 +8,15 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Restaurant App Color Palette */
-    --background: 0 0% 96.9%;
-    --foreground: 0 0% 17.6%;
+    /* Restaurant App Color Palette - Dark Theme */
+    --background: 0 0% 10%;
+    --foreground: 0 0% 95%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 17.6%;
+    --card: 0 0% 14%;
+    --card-foreground: 0 0% 95%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 17.6%;
+    --popover: 0 0% 14%;
+    --popover-foreground: 0 0% 95%;
 
     /* Primary: Laranja vibrante #FF6B35 */
     --primary: 16 100% 60%;
@@ -28,7 +28,7 @@ All colors MUST be HSL.
 
     /* Accent: Dourado #FFA500 */
     --accent: 39 100% 50%;
-    --accent-foreground: 0 0% 17.6%;
+    --accent-foreground: 0 0% 10%;
 
     /* Success: Verde */
     --success: 122 50% 56%;
@@ -36,17 +36,17 @@ All colors MUST be HSL.
 
     /* Warning: Alerta */
     --warning: 36 100% 50%;
-    --warning-foreground: 0 0% 17.6%;
+    --warning-foreground: 0 0% 10%;
 
     /* Destructive: Erro */
     --destructive: 4 90% 58%;
     --destructive-foreground: 0 0% 100%;
 
-    --muted: 0 0% 90%;
-    --muted-foreground: 0 0% 40%;
+    --muted: 0 0% 20%;
+    --muted-foreground: 0 0% 65%;
 
-    --border: 0 0% 89%;
-    --input: 0 0% 89%;
+    --border: 0 0% 25%;
+    --input: 0 0% 25%;
     --ring: 16 100% 60%;
 
     --radius: 0.75rem;
