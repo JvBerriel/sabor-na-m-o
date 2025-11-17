@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { orderHistory } from '@/data/mockData';
+import { useCart } from '@/contexts/CartContext';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -9,6 +9,7 @@ import { toast } from 'sonner';
 
 export default function OrderHistory() {
   const navigate = useNavigate();
+  const { orderHistory } = useCart();
   const [expandedOrders, setExpandedOrders] = useState<number[]>([]);
 
   const toggleExpanded = (orderId: number) => {
@@ -74,14 +75,20 @@ export default function OrderHistory() {
             month: 'long',
             year: 'numeric'
           });
+          const formattedTime = orderDate.toLocaleTimeString('pt-BR', {
+            hour: '2-digit',
+            minute: '2-digit',
+            timeZone: 'America/Sao_Paulo'
+          });
 
           return (
             <Card key={order.id} className="overflow-hidden shadow-md">
               <div className="p-4 space-y-3">
                 <div className="flex items-start justify-between">
                   <div>
-                    <p className="text-sm text-muted-foreground">{formattedDate}</p>
+                    <p className="text-sm text-muted-foreground">{formattedDate} às {formattedTime}</p>
                     <p className="font-bold text-foreground">Pedido #{order.id}</p>
+                    <p className="text-sm text-muted-foreground mt-1">Mesa: {order.mesa}</p>
                   </div>
                   <Badge className="bg-success/10 text-success border-success/20">
                     {order.status}

@@ -1,38 +1,77 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '@/contexts/CartContext';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ArrowLeft, Check, Loader2 } from 'lucide-react';
 
-const statusSteps = [
-  { label: 'Pedido Recebido', time: '14:30' },
-  { label: 'Em Preparo', time: '14:35' },
-  { label: 'Pronto', time: '14:45' },
-  { label: 'Entregue', time: '' }
+const statusStepsTemplate = [
+  { label: 'Pedido Recebido', minutesOffset: 0 },
+  { label: 'Em Preparo', minutesOffset: 5 },
+  { label: 'Pronto', minutesOffset: 15 },
+  { label: 'Entregue', minutesOffset: null }
 ];
 
 export default function OrderStatus() {
   const navigate = useNavigate();
-  const { currentOrder, updateOrderStatus } = useCart();
-  const [currentStepIndex, setCurrentStepIndex] = useState(0);
+  const { currentOrder, updateOrderStatus, completeOrder, currentStepIndex, setCurrentStepIndex } = useCart();
+
+  // Calcular horários baseado no horário do pedido (horário de Brasília)
+  const statusSteps = useMemo(() => {
+    if (!currentOrder) return statusStepsTemplate.map(step => ({ ...step, time: '' }));
+
+    // Pegar a data/hora atual do pedido
+    const orderTime = new Date();
+
+    return statusStepsTemplate.map(step => {
+      if (step.minutesOffset === null) {
+        return { label: step.label, time: '' };
+      }
+
+      // Calcular o horário adicionando os minutos de offset
+      const stepTime = new Date(orderTime.getTime() + step.minutesOffset * 60000);
+      const timeString = stepTime.toLocaleTimeString('pt-BR', {
+        hour: '2-digit',
+        minute: '2-digit',
+        timeZone: 'America/Sao_Paulo'
+      });
+
+      return { label: step.label, time: timeString };
+    });
+  }, [currentOrder]);
 
   useEffect(() => {
     if (!currentOrder) return;
 
     const interval = setInterval(() => {
       setCurrentStepIndex(prev => {
-        if (prev < statusSteps.length - 1) {
-          const newIndex = prev + 1;
-          updateOrderStatus(statusSteps[newIndex].label);
-          return newIndex;
+        // Se já estiver no último passo completado (index 4), não avança mais
+        if (prev >= statusSteps.length) {
+          return prev;
         }
-        return prev;
+
+        // Avançar para o próximo passo
+        const newIndex = prev + 1;
+
+        // Atualizar status se ainda estiver dentro dos steps
+        if (newIndex < statusSteps.length) {
+          updateOrderStatus(statusSteps[newIndex].label);
+        }
+
+        // Se chegou ao último step (Entregue), finalizar pedido após 2 segundos
+        if (newIndex === statusSteps.length) {
+          setTimeout(() => {
+            completeOrder();
+            navigate('/historico');
+          }, 2000);
+        }
+
+        return newIndex;
       });
     }, 5000); // Avança a cada 5 segundos
 
     return () => clearInterval(interval);
-  }, [currentOrder, updateOrderStatus]);
+  }, [currentOrder, updateOrderStatus, completeOrder, navigate, setCurrentStepIndex, statusSteps]);
 
   if (!currentOrder) {
     return (
